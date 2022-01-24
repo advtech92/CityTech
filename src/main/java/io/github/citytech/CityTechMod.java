@@ -1,5 +1,7 @@
 package io.github.citytech;
 
+import io.github.citytech.core.init.ItemInit;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -9,19 +11,25 @@ import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.eventbus.api.IEventBus;
 
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod("citytech")
+@Mod(CityTechMod.MOD_ID)
 public class CityTechMod
 {
     public static final Logger LOGGER = LogManager.getLogger();
+    public static final String MOD_ID = "citytech";
 
     public CityTechMod() {
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         // Register the setup method for modloading
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        bus.addListener(this::setup);
         // Register the enqueueIMC method for modloading
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
+        bus.addListener(this::enqueueIMC);
+
+        ItemInit.ITEMS.register(bus);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     private void setup(final FMLCommonSetupEvent event)
